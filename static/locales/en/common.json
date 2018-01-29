@@ -1,0 +1,23 @@
+{
+  "home": "home",
+  "api": "api",
+  "about": "about",
+  "search": "Search",
+  "loginRegister": "Login/Regiser",
+  "login": "Login",
+  "register": "Register",
+  "passsword": "Passsword",
+  "forgotPass": "Forgot password",
+  "email": "Email",
+  "displayName": "Display name",
+  "password": "Password",
+  "confirmPassword": "Confirm password",
+  "rememberMe": "Remember me",
+  "emptyEmail": "Please enter your E-mail!",
+  "emptyPassword": "Please enter your Password!",
+  "invalidEmail": "Please enter valid E-mail!",
+  "emptyConfirmPassword": "Two passwords that you enter is inconsistent!",
+  "emptydisplayName": "Please input your display name!",
+  "submitForgotPassword": "Reset your password",
+  "pureComponent": "Tesstttttt"
+}
