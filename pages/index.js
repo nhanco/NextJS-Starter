@@ -8,7 +8,6 @@ import { getTranslation } from "../tools/translationHelpers"
 export default class Index extends Component {
   static async getInitialProps({ req, urlPath }) {
     const translations = await getTranslation([ "common" ])
-    console.log(req.urlPath)
     return { translations, urlPath }
   }
   constructor(props) {
@@ -23,6 +22,7 @@ export default class Index extends Component {
         <HeadTags
           title="Home"
           lang={this.i18n}
+          description="abc"
           urlPath={this.urlPath}
         />
         <I18nextProvider i18n={this.i18n}>
