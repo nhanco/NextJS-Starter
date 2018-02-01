@@ -4,8 +4,11 @@ import bodyParser from "body-parser"
 import cookieParser from "cookie-parser"
 import dotenv from "dotenv"
 import jwt from "jsonwebtoken"
-import crypto from "crypto"
+import lusca from "lusca"
+import moment from "moment"
+import helmet from "helmet"
 import Auth from "./tools/Auth"
+import routes from "./server/routes"
 
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== "production"
@@ -17,57 +20,28 @@ app.prepare()
     const server = express()
     // Request body parsing middleware should be above methodOverride
     server.use(bodyParser.json())
-    server.use(bodyParser.urlencoded({ extended: false }))
+    server.use(bodyParser.urlencoded({
+      extended: true,
+      limit: "50mb",
+      parameterLimit: 10000000, // experiment with this parameter and tweak
+    }))
     server.use(cookieParser())
+    server.use(lusca.xframe("SAMEORIGIN"))
+    server.use(lusca.xssProtection(true))
+    // global user info
+    server.use(helmet())
+    server.use(helmet.xssFilter()) // sets the X-XSS-Protection header
+    server.use(helmet.frameguard("deny")) // Prevent iframe clickjacking
+    server.use(lusca.nosniff())
+    server.locals.moment = moment
 
-    server.post("/register", (req, res) => {
-      res.status(200).json({
-        data: "alo",
-      })
+    server.use((req, res, next) => {
+      res.locals.user = req.user
+      next()
+      // res.setHeader("X-Powered-By", "Nhan Co") // modify X power header
+      // res.setHeader("X-Dev-By", "http://fb.com/nhanco") // modify X power header
     })
-    // Verify username and password, if passed, we return jwt token for client
-    // We also include xsrfToken for client, which will be used to prevent CSRF attack
-    // and, you should use random complicated key (JWT Secret) to make brute forcing token very hard
-    server.post("/authenticate", (req, res) => {
-      let { username, password } = req.body
-      // if logged in
-      if (username === "test" || password === "test") {
-        // create token
-        const token = jwt.sign({
-          username,
-          xsrfToken: crypto.createHash("md5").update(username).digest("hex"),
-        }, "jwtSecret", {
-          expiresIn: 60 * 60 * 24 * 30, // 30days
-        })
-        res.status(200).json({
-          success: true,
-          message: "Enjoy your token",
-          token,
-        })
-      } else {
-        res.status(400).json({
-          success: false,
-          message: "Authentication failed",
-        })
-      }
-    })
-
-    // Api example to prevent CRSF attack
-    server.post("/api/preventCRSF", (req, res, next) => {
-      if (req.decoded.xsrfToken === req.get("X-XSRF-TOKEN")) {
-        res.status(200).json({
-          success: true,
-          message: "Yes, this api is protected by CRSF attack",
-        })
-      } else {
-        res.status(400).json({
-          success: false,
-          message: "CRSF attack is useless",
-        })
-      }
-    })
-
-    server.get("*", (req, res) => handle(req, res))
+    routes(server, handle)
 
     server.listen(port, (err) => {
       if (err) throw err

@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from "react"
 import { translate } from "react-i18next"
 import { Form, Input, Icon, Checkbox, Button } from "antd"
-import axios from "../../../tools/axios"
+import getData from "../../../tools/getData"
 
 const FormItem = Form.Item
 
@@ -15,7 +15,7 @@ class RegistrationForm extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log("Received values of form: ", values)
-        axios.post("register", values, (data) => {
+        getData.post("register", values, (data) => {
           console.log(data.data)
         })
       }

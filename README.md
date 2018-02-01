@@ -5,9 +5,13 @@ An starter for next.js with  graphql/apollo with mongodb in backend.
 - [x] Next.JS
 - [x] Express
 - [x] i18n support English and Vietnamese
-- [ ] Helmet for document head manager
-- [ ] Mongoose
 - [x] Ant desgin support
+- [ ] Helmet for document head manager
+    - [x] default title
+    - [x] default meta tags
+    - [x] default facebook meta tags
+    - [x] default twitter meta tags
+- [ ] Mongoose
 - [ ] Push notification
 - [ ] User notification 
 - [ ] User chatbox
